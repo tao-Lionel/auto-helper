@@ -1,0 +1,28 @@
+# 自动签到
+name: sign-in
+
+# 在什么时候触发
+on:
+  workflow_dispatch:
+  schedule:
+    # 每天国际时间 23:30 运行, 即北京时间 7:30 运行
+    - cron: "30 23 * * *"
+
+jobs:
+  auto-sign-in: # job名称
+    runs-on: ubuntu-latest # 运行环境
+
+    strategy:
+      matrix:
+        node-version: [16.x] # node 版本
+
+      steps:
+        - uses: actions/checkout@v3
+          with:
+            ref: "master"
+
+        - name: Use Node.js ${{ matrix.node-version }} # 步骤2
+          uses: actions/setup-node@v1 # 作用：安装nodejs
+          with:
+            node-version: ${{ matrix.node-version }} # 版本
+        - run: node juejin-auto.js
