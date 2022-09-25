@@ -16,13 +16,13 @@ jobs:
       matrix:
         node-version: [16.x] # node 版本
 
-      steps:
-        - uses: actions/checkout@v3
-          with:
-            ref: "master"
-
-        - name: Use Node.js ${{ matrix.node-version }} # 步骤2
-          uses: actions/setup-node@v1 # 作用：安装nodejs
-          with:
-            node-version: ${{ matrix.node-version }} # 版本
-        - run: node juejin-auto.js
+    steps:
+      - name: checkout # 步骤1
+        uses: actions/checkout@v3
+        with:
+          ref: "master"
+      - name: Use Node.js ${{ matrix.node-version }} # 步骤2
+        uses: actions/setup-node@v1 # 作用：安装nodejs
+        with:
+          node-version: ${{ matrix.node-version }} # 版本
+      - run: node juejin-auto.js
