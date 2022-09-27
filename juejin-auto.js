@@ -29,8 +29,8 @@ import got from "got";
   let signInApi = "https://api.juejin.cn/growth_api/v1/check_in";
   let checkFreeApi = "https://api.juejin.cn/growth_api/v1/lottery_config/get";
   let drawApi = "https://api.juejin.cn/growth_api/v1/lottery/draw";
-  let cookie_val =
-    "";
+  let cookie_val = process.env.JUEJIN_COOKIE
+  console.log(cookie_val);
   const HEADERS = {
     cookie: cookie_val,
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36",
