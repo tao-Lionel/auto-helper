@@ -77,7 +77,7 @@ import { JUEJIN_COOKIE } from './ENV.js'
 
   // 抽奖
   const draw = async () => {
-    const { err_no, err_msg, data } = await got(drawApi, options).json();
+    const { err_no, err_msg, data } = await got.post(drawApi, options).json();
     if (err_msg === "success") {
       console.log("抽奖成功", data);
       console.log('抽中的奖品', data.lottery_name);
