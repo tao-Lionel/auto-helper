@@ -25,6 +25,7 @@ jobs:
         uses: actions/setup-node@v1 # 作用：安装nodejs
         with:
           node-version: ${{ matrix.node-version }} # 版本
+      - name: Depend install and serve
         env: # 设置环境变量
           JUEJIN_COOKIE: ${{ secrets.JUEJIN_COOKIE }}
-      - run: yarn install && node juejin-auto.js
+        run: yarn install && node juejin-auto.js
