@@ -1,5 +1,5 @@
 import { http } from '../utils/http.js'
-import { JUEJIN_COOKIE } from './ENV.js'
+import { JUEJIN_COOKIE } from '../ENV.js'
 
 const baseURL = 'https://api.juejin.cn'
 const HEADERS = {
