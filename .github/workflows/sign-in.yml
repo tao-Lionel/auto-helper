@@ -28,4 +28,8 @@ jobs:
       - name: Depend install and serve
         env: # 设置环境变量
           JUEJIN_COOKIE: ${{ secrets.JUEJIN_COOKIE }}
+          APP_ID: ${{ secrets.APP_ID }}
+          APP_SECRET: ${{ secrets.APP_SECRET }}
+          USER_ID: ${{ secrets.USER_ID }}
+          TEMPLATE_ID: ${{ secrets.TEMPLATE_ID }}
         run: yarn install && node juejin-auto.js

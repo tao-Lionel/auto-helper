@@ -64,6 +64,27 @@ export function getCounts() {
  * @param page_no
  * @param page_size
  */
-export function getLotteryHistory({ page_no = 1, page_size = 5 }) {
-  return this.http.post(`${baseURL}/growth_api/v1/lottery_history/global_big`, { page_no, page_size })
+export function getLotteryHistoryApi({ page_no = 1, page_size = 5 }) {
+  const _options = {
+    ...options,
+    searchParams: {
+      page_no,
+      page_size,
+    }
+  }
+  return http.post(`${baseURL}/growth_api/v1/lottery_history/global_big`, _options)
+}
+
+/**
+ * @description: 沾喜气
+ * @param {*} history_id
+ */
+export function getLuckyApi(history_id) {
+  const _options = {
+    ...options,
+    searchParams: {
+      lottery_history_id: history_id
+    }
+  }
+  return http.post(`${baseURL}/growth_api/v1/lottery_lucky/dip_lucky`, _options)
 }
