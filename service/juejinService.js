@@ -1,9 +1,9 @@
 import { http } from '../utils/http.js'
-// import { JUEJIN_COOKIE } from './ENV.js'
+import { JUEJIN_COOKIE } from './ENV.js'
 
 const baseURL = 'https://api.juejin.cn'
 const HEADERS = {
-  cookie: '_tea_utm_cache_2608=undefined; __tea_cookie_tokens_2608=%257B%2522user_unique_id%2522%253A%25227077739706088621606%2522%252C%2522web_id%2522%253A%25227077739706088621606%2522%252C%2522timestamp%2522%253A1664439477090%257D; MONITOR_WEB_ID=1d1acddf-49b1-49d8-be4b-e0dc24945652; _ga=GA1.2.1068361274.1664439684; _gid=GA1.2.1566326486.1664439684; passport_csrf_token=df68c2ae4a17f1d6afeaf932ee6d7cfb; passport_csrf_token_default=df68c2ae4a17f1d6afeaf932ee6d7cfb; _tea_utm_cache_2018=undefined; n_mh=Q7CRYBs9iZc8FopTp17xPyWZs3aVnUJNrmgDODTzImk; passport_auth_status=9e4e0d9a6838b5396ba20175c54f3935%2C80ae61feba908a9e8443f3aaeb863abe; passport_auth_status_ss=9e4e0d9a6838b5396ba20175c54f3935%2C80ae61feba908a9e8443f3aaeb863abe; sid_guard=bb4ded9d4a1622c164f59f534ca4d03a%7C1664440232%7C31535999%7CFri%2C+29-Sep-2023+08%3A30%3A31+GMT; uid_tt=2c29f6bfc2dfae9287e1a74dbbb83bc2; uid_tt_ss=2c29f6bfc2dfae9287e1a74dbbb83bc2; sid_tt=bb4ded9d4a1622c164f59f534ca4d03a; sessionid=bb4ded9d4a1622c164f59f534ca4d03a; sessionid_ss=bb4ded9d4a1622c164f59f534ca4d03a; sid_ucp_v1=1.0.0-KGJjMGU0ZDE5YmVjY2ZlZmUzNGI0ODFiYTA5NWEzYWUzNmZlNTIxZDkKFgjtjNCoio0EEKiv1ZkGGLAUOAJA8QcaAmxmIiBiYjRkZWQ5ZDRhMTYyMmMxNjRmNTlmNTM0Y2E0ZDAzYQ; ssid_ucp_v1=1.0.0-KGJjMGU0ZDE5YmVjY2ZlZmUzNGI0ODFiYTA5NWEzYWUzNmZlNTIxZDkKFgjtjNCoio0EEKiv1ZkGGLAUOAJA8QcaAmxmIiBiYjRkZWQ5ZDRhMTYyMmMxNjRmNTlmNTM0Y2E0ZDAzYQ',
+  cookie: JUEJIN_COOKIE,
   "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36",
 }
 const options = {
