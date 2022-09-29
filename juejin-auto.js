@@ -1,88 +1,95 @@
-/*
- * 今日是否已签到
- *  https://api.juejin.cn/growth_api/v1/get_today_status
- * GET
- */
 
-/*
- * 签到接口
- * /growth_api/v1/check_in
- * POST
- */
 
-/*
- * 查询今日免费抽奖机会
- * 	/growth_api/v1/lottery_config/get
- * GET
- *
- */
+import { getTodayStatus, setCheckIn, getLottery, setLotteryDraw, getUser, getCounts } from './service/juejinService.js'
 
-/*
- * 抽奖
- *	/growth_api/v1/lottery/draw
- * GET
- */
+const message = {
+  userName: '', // 用户名
+  msg: '', // 消息
+  checkedIn: false, // 是否已签到
+  incrPoint: 0, // 签到获得矿石数
+  sumPoint: 0, // 总矿石数
+  contCount: 0, // 连续签到天数
+  sumCount: 0, // 累计签到天数
+  // dippedLucky: false, // 是否沾喜气
+  dipValue: 0, // 幸运值
+  luckyValue: 0, // 总幸运值
+  freeCount: 0, // 免费抽奖次数
+  freeDraw: false, // 是否免费抽奖
+  lotteryName: '', // 奖品名称
+  // collectedBug: false, // 是否收集 Bug
+  // collectBugCount: 0, // 收集 Bug 的数量
+}
 
-import got from "got";
-import { JUEJIN_COOKIE } from './ENV.js'
-(function () {
-  let checkTodayStatusApi = "https://api.juejin.cn/growth_api/v1/get_today_status";
-  let signInApi = "https://api.juejin.cn/growth_api/v1/check_in";
-  let checkFreeApi = "https://api.juejin.cn/growth_api/v1/lottery_config/get";
-  let drawApi = "https://api.juejin.cn/growth_api/v1/lottery/draw";
-  let cookie_val = JUEJIN_COOKIE
-  console.log(cookie_val);
-  const HEADERS = {
-    cookie: cookie_val,
-    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36",
-  };
-  const options = {
-    hooks: {
-      beforeRequest: [
-        options => {
-          Object.assign(options.headers, HEADERS);
+  (function () {
+
+    // 登陆
+    const login = async () => {
+      const { err_no, err_msg, data } = await getUser().json()
+      if (err_no === 0) {
+        message.userName = data.user_name
+        checkStatus();
+      } else {
+        message.msg = "登陆失败，检查cookie是否过期"
+      }
+    }
+
+    // 查询今日是否已签到
+    const checkStatus = async () => {
+      const { err_no, err_msg, data } = await getTodayStatus().json();
+      console.log("是否签到", { err_no, err_msg, data });
+      message.checkedIn = data
+      // 如果没签到去签到
+      if (!data && err_no === 0) {
+        signIn();
+      }
+    };
+
+    // 签到
+    const signIn = async () => {
+      const { err_no, err_msg, data } = await setCheckIn().json();
+      message.incrPoint = data.incr_point
+      message.sumPoint = data.sum_point
+      if (err_no === 0) {
+        getCount();
+        checkFree();
+      }
+    };
+
+    // 签到天数
+    const getCount = async () => {
+      const { data } = await getCounts()
+      message.contCount = counts.cont_count
+      message.sumCount = counts.sum_count
+    }
+
+    // 查询今日是否有免费抽奖机会
+    const checkFree = async () => {
+      const { err_no, err_msg, data } = await getLottery().json();
+      console.log("免费抽奖机会", data.free_count); // 签到得的矿石
+      if (data.free_count >= 1 && err_no === 0) {
+        draw();
+      }
+    };
+
+    // 抽奖
+    const draw = async () => {
+      const { err_no, err_msg, data } = await setLotteryDraw().json();
+      if (err_no === 0) {
+        console.log('抽中的奖品', data.lottery_name);
+      }
+    };
+
+    const message = (data) => {
+      return {
+        'user': {
+          'value': data.userName
         },
-      ],
-    },
-  };
-
-  // 查询今日是否已签到
-  const checkStatus = async () => {
-    const { err_no, err_msg, data } = await got(checkTodayStatusApi, options).json();
-    console.log("是否签到", data);
-    // 如果没签到去签到
-    if (!data && err_msg === "success") {
-      signIn();
+        'mes': {
+          'value': data.mes
+        }
+      }
     }
-  };
 
-  // 签到
-  const signIn = async () => {
-    const { err_no, err_msg, data } = await got.post(signInApi, options).json();
-    console.log("签到得的矿石", data.incr_point); // 签到得的矿石
-    console.log("一共有多少矿石", data.sum_point); // 一共有多少矿石
-    if (err_msg === "success") {
-      checkFree();
-    }
-  };
+    login()
 
-  // 查询今日是否有免费抽奖机会
-  const checkFree = async () => {
-    const { err_no, err_msg, data } = await got(checkFreeApi, options).json();
-    console.log("免费抽奖机会", data.free_count); // 签到得的矿石
-    if (data.free_count >= 1 && err_msg === "success") {
-      draw();
-    }
-  };
-
-  // 抽奖
-  const draw = async () => {
-    const { err_no, err_msg, data } = await got.post(drawApi, options).json();
-    if (err_msg === "success") {
-      console.log("抽奖成功", data);
-      console.log('抽中的奖品', data.lottery_name);
-    }
-  };
-
-  checkStatus();
-})();
+  })();
