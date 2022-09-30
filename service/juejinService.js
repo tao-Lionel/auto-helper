@@ -58,6 +58,12 @@ export function getCounts() {
   return http.get(`${baseURL}/growth_api/v1/get_counts`, options)
 }
 
+/**
+ * @description: 获取矿石数
+ */
+export function getPointApi() {
+  return http.get(`${baseURL}/growth_api/v1/get_cur_point`, options)
+}
 
 /**
  * @desc 围观大奖记录

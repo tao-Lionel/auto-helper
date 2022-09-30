@@ -1,6 +1,6 @@
 
 
-import { getTodayStatus, setCheckIn, getLottery, setLotteryDraw, getUser, getCounts, getLotteryHistoryApi, getLuckyApi } from './service/juejinService.js'
+import { getTodayStatus, setCheckIn, getLottery, setLotteryDraw, getUser, getCounts, getLotteryHistoryApi, getLuckyApi, getPointApi } from './service/juejinService.js'
 import { sendMessage } from './sendMessage.js'
 import { USER_ID, TEMPLATE_ID } from './ENV.js'
 
@@ -28,7 +28,6 @@ import { USER_ID, TEMPLATE_ID } from './ENV.js'
       message.userName = data.user_name
       checkStatus();
     } else {
-      message.msg = "登陆失败，检查cookie是否过期"
       formatMessage()
     }
   }
@@ -41,6 +40,10 @@ import { USER_ID, TEMPLATE_ID } from './ENV.js'
     // 如果没签到去签到
     if (!data) {
       signIn();
+    } else {
+      getPoint()
+      getCount()
+      checkFree()
     }
   };
 
@@ -51,15 +54,8 @@ import { USER_ID, TEMPLATE_ID } from './ENV.js'
     message.sumPoint = data.sum_point
     getCount();
     checkFree();
-
   };
 
-  // 签到天数
-  async function getCount() {
-    const { data } = await getCounts()
-    message.contCount = data.cont_count
-    message.sumCount = data.sum_count
-  }
 
   // 查询今日是否有免费抽奖机会
   async function checkFree() {
@@ -67,7 +63,10 @@ import { USER_ID, TEMPLATE_ID } from './ENV.js'
     message.freeCount = data.free_count
     console.log("免费抽奖机会", data.free_count);
     if (data.free_count >= 1) {
+      message.freeDraw = true
       draw();
+    } else {
+      getLotteryHistory()
     }
   };
 
@@ -78,6 +77,19 @@ import { USER_ID, TEMPLATE_ID } from './ENV.js'
     console.log('抽中的奖品', data.lottery_name);
     getLotteryHistory()
   };
+
+  // 签到天数
+  async function getCount() {
+    const { data } = await getCounts().json()
+    message.contCount = data.cont_count
+    message.sumCount = data.sum_count
+  }
+
+  // 获取矿石数
+  async function getPoint() {
+    const { data } = await getPointApi().json()
+    message.sumPoint = data
+  }
 
   // 获取围观大奖记录
   async function getLotteryHistory() {
@@ -99,30 +111,57 @@ import { USER_ID, TEMPLATE_ID } from './ENV.js'
   // 格式化要发送的消息
   function formatMessage() {
     let _message = {}
+    let checkMsg = message.checkedIn ? `今日已签到` : `签到 +${message.incrPoint} 矿石`
+    let luckyMsg = message.dippedLucky ? '今日已经沾过喜气' : `沾喜气 +${message.dipValue} 幸运值`
+    let lotteryMsg = message.freeDraw ? `恭喜抽中 ${message.lotteryName}` : '今日已免费抽奖'
+    // 单模板 无文字颜色的方案
+    // _message.msg = {
+    //   value: `Hello ${message.userName}
+    //   ${checkMsg}
+    //   当前矿石数：${message.sumPoint}
+    //   连续签到天数：${message.contCount}
+    //   累计签到天数：${message.sumCount}
+    //   ${luckyMsg}
+    //   当前幸运值：${message.luckyValue}
+    //   免费抽奖次数：${message.freeCount}
+    //   ${lotteryMsg}`,
+    //   color: ""
+    // }
+    message.checkMsg = checkMsg
+    message.luckyMsg = luckyMsg
+    message.lotteryMsg = lotteryMsg
+    // 字体颜色
+    let colorObj = {
+      checkMsg: '#E37815',
+      luckyMsg: '#E37815',
+      lotteryMsg: '#E37815',
+      luckyValue: '#2C68FF',
+      sumPoint: '#2C68FF'
+    }
+
     for (let key in message) {
       _message[key] = {
-        value: message[key]
+        value: message[key],
+        color: colorObj[key] ? colorObj[key] : ''
       }
     }
-    // 你好：{{ userName.DATA }}
-    // {{ msg.DATA }}
-    // 是否已签到：{{ checkedIn.DATA }}
-    // 签到获得矿石数：{{ incrPoint.DATA }}
-    // 当前总矿石数：{{ sumPoint.DATA }}
-    // 连续签到天数：{{ contCount.DATA }}
-    // 累计签到天数：{{ sumCount.DATA }}
-    // 是否沾喜气：{{ dippedLucky.DATA }}
-    // 幸运值：{{ dipValue.DATA }}
-    // 总幸运值：{{ luckyValue.DATA }}
-    // 免费抽奖次数：{{ freeCount.DATA }}
-    // 是否免费抽奖：{{ freeDraw.DATA }}
-    // 奖品名称：{{ lotteryName.DATA }}
 
+    //   你好：{{ userName.DATA }}
+    //   {{ checkMsg.DATA }}
+    //   当前矿石数：{{ sumPoint.DATA }}
+    //   连续签到天数：{{ contCount.DATA }} 天
+    //   累计签到天数：{{ sumCount.DATA }} 天
+    //   {{ luckyMsg.DATA }}
+    //   当前幸运值：{{ luckyValue.DATA }}
+    //   免费抽奖次数：{{ freeCount.DATA }}
+    //  {{ lotteryMsg.DATA }}
+
+    // 整理推送的消息
     const data = {
       touser: USER_ID,
       template_id: TEMPLATE_ID,
       url: '',
-      topcolor: '#FF0000',
+      topcolor: '#2C68FF',
       data: _message,
     }
 
