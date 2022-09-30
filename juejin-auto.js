@@ -29,6 +29,7 @@ async function login() {
     checkStatus();
   } else {
     message.msg = "登陆失败，检查cookie是否过期"
+    formatMessage()
   }
 }
 
@@ -38,7 +39,7 @@ async function checkStatus() {
   console.log("是否签到", { err_no, err_msg, data });
   message.checkedIn = data
   // 如果没签到去签到
-  if (!data && err_no === 0) {
+  if (!data) {
     signIn();
   }
 };
@@ -48,10 +49,9 @@ async function signIn() {
   const { err_no, err_msg, data } = await setCheckIn().json();
   message.incrPoint = data.incr_point
   message.sumPoint = data.sum_point
-  if (err_no === 0) {
-    getCount();
-    checkFree();
-  }
+  getCount();
+  checkFree();
+
 };
 
 // 签到天数
@@ -64,8 +64,9 @@ async function getCount() {
 // 查询今日是否有免费抽奖机会
 async function checkFree() {
   const { err_no, err_msg, data } = await getLottery().json();
-  console.log("免费抽奖机会", data.free_count); // 签到得的矿石
-  if (data.free_count >= 1 && err_no === 0) {
+  message.freeCount = data.free_count
+  console.log("免费抽奖机会", data.free_count);
+  if (data.free_count >= 1) {
     draw();
   }
 };
@@ -73,9 +74,8 @@ async function checkFree() {
 // 抽奖
 async function draw() {
   const { err_no, err_msg, data } = await setLotteryDraw().json();
-  if (err_no === 0) {
-    console.log('抽中的奖品', data.lottery_name);
-  }
+  message.lotteryName = data.lottery_name
+  console.log('抽中的奖品', data.lottery_name);
   getLotteryHistory()
 };
 
@@ -131,7 +131,7 @@ function formatMessage() {
 }
 
 login()
-formatMessage()
+// formatMessage()
 
 
 
