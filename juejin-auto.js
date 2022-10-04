@@ -28,6 +28,7 @@ import { USER_ID, TEMPLATE_ID } from './ENV.js'
       message.userName = data.user_name
       checkStatus();
     } else {
+      message.userName = 'cookie 过期'
       formatMessage()
     }
   }
