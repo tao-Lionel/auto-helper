@@ -42,8 +42,8 @@ import { USER_ID, TEMPLATE_ID } from './ENV.js'
     if (!data) {
       signIn();
     } else {
-      getPoint()
-      getCount()
+      await getPoint()
+      await getCount()
       checkFree()
     }
   };
@@ -53,7 +53,7 @@ import { USER_ID, TEMPLATE_ID } from './ENV.js'
     const { err_no, err_msg, data } = await setCheckIn().json();
     message.incrPoint = data.incr_point
     message.sumPoint = data.sum_point
-    getCount();
+    await getCount();
     checkFree();
   };
 
