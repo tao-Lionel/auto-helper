@@ -172,7 +172,8 @@ import { USER_ID, TEMPLATE_ID } from "./ENV.js";
       template_id: TEMPLATE_ID,
       url: "",
       topcolor: "#2C68FF",
-      data: _message
+      // data: _message
+      data: { userName: { value: "喝水运动员", color: "" }, checkMsg: { value: "今日已签到", color: "#E37815" } }
     };
 
     // 发送消息
