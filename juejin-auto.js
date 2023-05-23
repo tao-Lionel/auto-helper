@@ -175,6 +175,7 @@ import { USER_ID, TEMPLATE_ID } from "./ENV.js";
       data: _message
     };
 
+    // 测试
     // 发送消息
     sendMessage(data);
   }
