@@ -32,4 +32,6 @@ jobs:
           APP_SECRET: ${{ secrets.APP_SECRET }}
           USER_ID: ${{ secrets.USER_ID }}
           TEMPLATE_ID: ${{ secrets.TEMPLATE_ID }}
-        run: yarn install && node juejin-auto.js
+          JD_COOKIE: ${{ secrets.JD_COOKIE }}
+          TEMPLATE_ID_JD: ${{ secrets.TEMPLATE_ID_JD }}
+        run: yarn install && node juejin-auto.js && node jd.js

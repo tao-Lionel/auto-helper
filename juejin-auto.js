@@ -15,7 +15,7 @@ import { USER_ID, TEMPLATE_ID } from "./ENV.js";
 (function () {
   const message = {
     userName: "", // 用户名
-    msg: "", // 消息
+    // msg: "", // 消息
     checkedIn: false, // 是否已签到
     incrPoint: 0, // 签到获得矿石数
     sumPoint: 0, // 总矿石数
