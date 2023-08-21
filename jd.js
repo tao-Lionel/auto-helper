@@ -9,7 +9,7 @@ import { USER_ID, TEMPLATE_ID_JD } from "./ENV.js";
     beanCount: 0, // 签到获得京豆数
     totalUserBean: 0, // 总京豆数
     continuousDays: 0, // 连续签到天数
-    error: ''
+    error: ""
   };
 
   // 签到
@@ -17,28 +17,36 @@ import { USER_ID, TEMPLATE_ID_JD } from "./ENV.js";
     const { data, code } = await setCheckIn().json();
     console.log(data);
     if (code == 0) {
-      const { dailyAward, totalUserBean, continuousDays, status } = data
-      message.title = dailyAward.title
-      message.beanCount = dailyAward.beanAward.beanCount
-      message.totalUserBean = totalUserBean
-      message.continuousDays = continuousDays
+      const { dailyAward, totalUserBean, continuousDays, status, continuityAward } = data;
+      let title = "";
+      let beanCount = "";
+      if (dailyAward) {
+        title = dailyAward.title;
+        beanCount = dailyAward.beanAward?.beanCount;
+      } else if (continuityAward) {
+        title = continuityAward.title;
+        beanCount = continuityAward.beanAward?.beanCount;
+      }
+      message.title = title;
+      message.beanCount = beanCount;
+      message.totalUserBean = totalUserBean;
+      message.continuousDays = continuousDays;
     } else {
-      message.error = data
+      message.error = data;
     }
 
-    formatMessage()
+    formatMessage();
   }
 
   // 格式化要发送的消息
   function formatMessage() {
-    let _message = {}
+    let _message = {};
     // 字体颜色
     let colorObj = {
       beanCount: "#E37815",
       totalUserBean: "#E37815",
-      continuousDays: "#E37815",
+      continuousDays: "#E37815"
     };
-
 
     for (let key in message) {
       _message[key] = {
