@@ -18,7 +18,7 @@ import { USER_ID, TEMPLATE_ID_JD } from "./ENV.js";
     console.log(data);
     console.log("code", code);
     console.log("errorMessage", errorMessage);
-    if (code == 0) {
+    if (!errorMessage) {
       const { dailyAward, totalUserBean, continuousDays, status, continuityAward } = data;
       let title = "";
       let beanCount = "";
@@ -34,7 +34,7 @@ import { USER_ID, TEMPLATE_ID_JD } from "./ENV.js";
       message.totalUserBean = totalUserBean;
       message.continuousDays = continuousDays;
     } else {
-      message.error = data;
+      message.error = errorMessage;
     }
 
     formatMessage();
