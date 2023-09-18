@@ -14,8 +14,10 @@ import { USER_ID, TEMPLATE_ID_JD } from "./ENV.js";
 
   // 签到
   async function signBean() {
-    const { data, code } = await setCheckIn().json();
+    const { data, code, errorMessage } = await setCheckIn().json();
     console.log(data);
+    console.log("code", code);
+    console.log("errorMessage", errorMessage);
     if (code == 0) {
       const { dailyAward, totalUserBean, continuousDays, status, continuityAward } = data;
       let title = "";
