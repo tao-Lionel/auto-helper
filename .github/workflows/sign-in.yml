@@ -34,4 +34,4 @@ jobs:
           TEMPLATE_ID: ${{ secrets.TEMPLATE_ID }}
           JD_COOKIE: ${{ secrets.JD_COOKIE }}
           TEMPLATE_ID_JD: ${{ secrets.TEMPLATE_ID_JD }}
-        run: yarn install && node juejin-auto.js && node jd.js
+        run: yarn install && node juejin-auto.js
