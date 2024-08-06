@@ -7,7 +7,7 @@ import {
   getCounts,
   getLotteryHistoryApi,
   getLuckyApi,
-  getPointApi
+  getPointApi,
 } from "./service/juejinService.js";
 import { sendMessage } from "./sendMessage.js";
 import { USER_ID, TEMPLATE_ID } from "./ENV.js";
@@ -26,7 +26,7 @@ import { USER_ID, TEMPLATE_ID } from "./ENV.js";
     luckyValue: 0, // 总幸运值
     freeCount: 0, // 免费抽奖次数
     freeDraw: false, // 是否免费抽奖
-    lotteryName: "" // 奖品名称
+    lotteryName: "", // 奖品名称
   };
 
   // 登陆
@@ -59,6 +59,7 @@ import { USER_ID, TEMPLATE_ID } from "./ENV.js";
   // 签到
   async function signIn() {
     const { err_no, err_msg, data } = await setCheckIn().json();
+    console.log("签到", { err_no, err_msg, data });
     message.incrPoint = data.incr_point;
     message.sumPoint = data.sum_point;
     await getCount();
@@ -68,9 +69,9 @@ import { USER_ID, TEMPLATE_ID } from "./ENV.js";
   // 查询今日是否有免费抽奖机会
   async function checkFree() {
     const { err_no, err_msg, data } = await getLottery().json();
-    message.freeCount = data.free_count;
-    console.log("免费抽奖机会", data.free_count);
-    if (data.free_count >= 1) {
+    console.log("免费抽奖机会", { err_no, err_msg, data });
+    message.freeCount = data?.free_count;
+    if (data?.free_count >= 1) {
       message.freeDraw = true;
       draw();
     } else {
@@ -101,7 +102,10 @@ import { USER_ID, TEMPLATE_ID } from "./ENV.js";
 
   // 获取围观大奖记录
   async function getLotteryHistory() {
-    const { err_no, err_msg, data } = await getLotteryHistoryApi({ page_no: 1, page_size: 5 }).json();
+    const { err_no, err_msg, data } = await getLotteryHistoryApi({
+      page_no: 1,
+      page_size: 5,
+    }).json();
     console.log(data.lotteries[0].history_id);
     getLucky(data.lotteries[0].history_id);
   }
@@ -119,9 +123,15 @@ import { USER_ID, TEMPLATE_ID } from "./ENV.js";
   // 格式化要发送的消息
   function formatMessage() {
     let _message = {};
-    let checkMsg = message.checkedIn ? `今日已签到` : `签到 +${message.incrPoint} 矿石`;
-    let luckyMsg = message.dippedLucky ? "今日已经沾过喜气" : `沾喜气 +${message.dipValue} 幸运值`;
-    let lotteryMsg = message.freeDraw ? `恭喜抽中 ${message.lotteryName}` : "今日已免费抽奖";
+    let checkMsg = message.checkedIn
+      ? `今日已签到`
+      : `签到 +${message.incrPoint} 矿石`;
+    let luckyMsg = message.dippedLucky
+      ? "今日已经沾过喜气"
+      : `沾喜气 +${message.dipValue} 幸运值`;
+    let lotteryMsg = message.freeDraw
+      ? `恭喜抽中 ${message.lotteryName}`
+      : "今日已免费抽奖";
     // 单模板 无文字颜色的方案
     // _message.msg = {
     //   value: `Hello ${message.userName}
@@ -144,13 +154,13 @@ import { USER_ID, TEMPLATE_ID } from "./ENV.js";
       luckyMsg: "#E37815",
       lotteryMsg: "#E37815",
       luckyValue: "#2C68FF",
-      sumPoint: "#2C68FF"
+      sumPoint: "#2C68FF",
     };
 
     for (let key in message) {
       _message[key] = {
         value: message[key],
-        color: colorObj[key] ? colorObj[key] : ""
+        color: colorObj[key] ? colorObj[key] : "",
       };
     }
 
@@ -172,7 +182,7 @@ import { USER_ID, TEMPLATE_ID } from "./ENV.js";
       template_id: TEMPLATE_ID,
       url: "",
       topcolor: "#2C68FF",
-      data: _message
+      data: _message,
     };
 
     // 测试
